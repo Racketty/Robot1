@@ -1,4 +1,5 @@
 #include "main.h"
+#include "EZ-Template/intake.hpp"
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -11,7 +12,7 @@ ez::Drive chassis(
     {-1, -2, 3},     // Left Chassis Ports (negative port will reverse it!)
     {11, 12, -13},  // Right Chassis Ports (negative port will reverse it!)
 
-    7,      // IMU Port
+    15,      // IMU Port
     4.125,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
     466);   // Wheel RPM = cartridge * (motor gear / wheel gear)
 
@@ -58,7 +59,7 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
-      {"Drive\n\nDrive forward and come back", drive_example},
+      /*{"Drive\n\nDrive forward and come back", drive_example},
       {"Turn\n\nTurn 3 times.", turn_example},
       {"Drive and Turn\n\nDrive forward, turn, come back", drive_and_turn},
       {"Drive and Turn\n\nSlow down during drive", wait_until_change_speed},
@@ -72,6 +73,10 @@ void initialize() {
       {"Boomerang\n\nGo to (0, 24, 45) then come back to (0, 0, 0)", odom_boomerang_example},
       {"Boomerang Pure Pursuit\n\nGo to (0, 24, 45) on the way to (24, 24) then come back to (0, 0, 0)", odom_boomerang_injected_pure_pursuit_example},
       {"Measure Offsets\n\nThis will turn the robot a bunch of times and calculate your offsets for your tracking wheels.", measure_offsets},
+      */
+      //{"Drive\n\nDrive forward and spin intake", match_load}
+      //{"Drive\n\nDrive forward and spin intake", line_up}
+      {"Drive\n\nDrive forward and spin intake", best_auto}
   });
 
   // Initialize chassis and auton selector
@@ -114,12 +119,12 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
-  chassis.pid_targets_reset();                // Resets PID targets to 0
-  chassis.drive_imu_reset();                  // Reset gyro position to 0
-  chassis.drive_sensor_reset();               // Reset drive sensors to 0
-  chassis.odom_xyt_set(0_in, 0_in, 0_deg);    // Set the current position, you can start at a specific position with this
-  chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
-
+  // chassis.pid_targets_reset();                // Resets PID targets to 0
+  // chassis.drive_imu_reset();                  // Reset gyro position to 0
+  // chassis.drive_sensor_reset();               // Reset drive sensors to 0
+  // chassis.odom_xyt_set(0_in, 0_in, 0_deg);    // Set the current position, you can start at a specific position with this
+  // chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
+  // drive_example();
   /*
   Odometry and Pure Pursuit are not magic
 
@@ -246,12 +251,14 @@ void opcontrol() {
 
   while (true) {
     // Gives you some extras to make EZ-Template ezier
-    ez_template_extras();
+    //ez_template_extras();
 
     chassis.opcontrol_tank();  // Tank control
-    intake_opcontrol();        // Intake control
+    //intake_opcontrol();        // Intake control
+    intake_apply();
+    intake_toggle_update();
     outtake_opcontrol();       // Outtake control
-    
+     
     // chassis.opcontrol_arcade_standard(ez::SPLIT);   // Standard split arcade
     // chassis.opcontrol_arcade_standard(ez::SINGLE);  // Standard single arcade
     // chassis.opcontrol_arcade_flipped(ez::SPLIT);    // Flipped split arcade
