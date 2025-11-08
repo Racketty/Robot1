@@ -1,4 +1,5 @@
 #include "main.h"
+#include "subsystems.hpp"
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -375,4 +376,153 @@ void measure_offsets() {
 
 // . . .
 // Make your own autonomous functions here!
+
+void match_load() {
+  chassis.drive_angle_set(0_deg);  // forward is the intake, backward is the triangle
+  chassis.pid_drive_set(27_in, 50);
+  //intake.move(-127);
+  top.move(-127);
+  bottom.move(-127);
+  pros::delay(2000);
+  
+  chassis.pid_drive_set(-5_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(6_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(6_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(5_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(5_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(5_in, 40);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-32_in, 40);
+  chassis.pid_wait();
+  outtake.move(-127);
+  scoreTop.move(127);
+  //intake.move(-127);
+  top.move(-127);
+  bottom.move(-127);
+  pros::delay(500);
+  scoreTop.move(0);
+  //intake.move(0);
+  top.move(0);
+  bottom.move(0);
+  pros::delay(100);
+  scoreTop.move(127);
+  //intake.move(-127);
+  top.move(-127);
+  bottom.move(-127);
+  pros::delay(2250);
+  chassis.pid_drive_set(3_in, 40);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-4_in, 40);
+  chassis.pid_wait();
+  scoreTop.move(0);
+  outtake.move(0);
+  //intake.move(0);
+  top.move(0);
+  bottom.move(0);
+}
+
+void line_up() {
+chassis.drive_angle_set(90_deg);  
+chassis.pid_drive_set(-37_in, 40);
+chassis.pid_wait();
+chassis.pid_turn_set(178, 40);
+chassis.pid_wait();
+
+chassis.drive_angle_set(180_deg); 
+chassis.pid_drive_set(-17_in, 40);
+chassis.pid_wait();
+match_load();
+}
+
+void better_auto() {
+chassis.drive_angle_set(90_deg); 
+chassis.pid_drive_set(45_in, 45);
+chassis.pid_wait();
+//intake.move(-127);
+top.move(-127);
+bottom.move(-127);
+pros::delay(1000);
+chassis.pid_drive_set(-12_in, 40);
+chassis.pid_wait();
+//intake.move(0);
+top.move(0);
+bottom.move(0);
+chassis.pid_turn_set(0, 40);
+chassis.pid_wait();
+chassis.drive_angle_set(180_deg); 
+chassis.pid_drive_set(-20_in, 40);
+chassis.pid_wait();
+outtake.move(-127);
+scoreTop.move(127);
+pros::delay(1500);
+outtake.move(0);
+scoreTop.move(0);
+match_load();
+}
+
+void best_auto() {
+chassis.drive_angle_set(90_deg); 
+chassis.pid_drive_set(45_in, 45);
+chassis.pid_wait();
+//intake.move(-127);
+top.move(-127);
+bottom.move(-127);
+pros::delay(1000);
+chassis.pid_drive_set(-12_in, 40);
+chassis.pid_wait();
+//intake.move(0);
+top.move(0);
+bottom.move(0);
+chassis.pid_turn_set(0, 40);
+chassis.pid_wait();
+chassis.drive_angle_set(180_deg); 
+chassis.pid_drive_set(-20_in, 40);
+chassis.pid_wait();
+outtake.move(-127);
+scoreTop.move(127);
+pros::delay(1500);
+outtake.move(0);
+scoreTop.move(0);
+match_load();
+chassis.pid_drive_set(13_in, 40);
+chassis.pid_wait();
+chassis.pid_turn_set(274, 40);
+chassis.pid_wait();
+chassis.pid_drive_set(120_in, 50);
+chassis.pid_wait();
+top.move(-127);
+bottom.move(-127);
+pros::delay(1000);
+chassis.pid_drive_set(-12_in, 40);
+chassis.pid_wait();
+top.move(0);
+bottom.move(0);
+chassis.pid_turn_set(0, 40);
+chassis.pid_wait();
+chassis.drive_angle_set(180_deg); 
+chassis.pid_drive_set(-20_in, 40);
+chassis.pid_wait();
+outtake.move(-127);
+scoreTop.move(127);
+pros::delay(1500);
+outtake.move(0);
+scoreTop.move(0);
+match_load();
+
+
+}
 // . . .
