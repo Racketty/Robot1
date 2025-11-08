@@ -1,4 +1,5 @@
 #include "main.h"
+#include "subsystems.hpp"
 
 enum IntakeState {
     INTAKE_OFF,
@@ -6,8 +7,12 @@ enum IntakeState {
     INTAKE_REVERSE
 };
 
-void set_intake(int input) {
-  intake.move(input);
+void set_top(int input) {
+  top.move(input);
+}
+
+void set_bottom(int input) {
+  top.move(input);
 }
 
 void set_outtake(int input) {
@@ -17,7 +22,7 @@ void set_outtake(int input) {
 void set_scoreTop(int input) {
     scoreTop.move(input);
 }
-
+/*
 void intake_opcontrol() {
     static IntakeState intake_state = INTAKE_OFF; 
 
@@ -61,6 +66,43 @@ void intake_opcontrol() {
             break;
     }
 }
+*/
+
+int top_power;   // motors -20
+int bottom_power;   // motor 10
+
+void intake_apply() {
+    top.move(top_power);       // motor -20
+    bottom.move(bottom_power); // motor 10
+}
+
+void intake_toggle_update() {
+    static IntakeState intake_state = INTAKE_OFF;
+
+    if (master.get_digital_new_press(DIGITAL_R1)) {
+        intake_state = (intake_state == INTAKE_FORWARD) ? INTAKE_OFF : INTAKE_FORWARD;
+    }
+
+    if (master.get_digital_new_press(DIGITAL_R2)) {
+        intake_state = (intake_state == INTAKE_REVERSE) ? INTAKE_OFF : INTAKE_REVERSE;
+    }
+
+    switch (intake_state) {
+        case INTAKE_FORWARD: top_power = 127; bottom_power = 127; break;
+        case INTAKE_REVERSE: top_power = -127; bottom_power = -127; break;
+        case INTAKE_OFF:     top_power = 0; bottom_power = 0; break;
+    }
+
+    if (master.get_digital(DIGITAL_A)) {
+    intake_state = INTAKE_OFF;
+    top_power = 127;
+    bottom_power = -127;
+    }
+}
+
+
+
+
 
 void outtake_opcontrol() {
     if (master.get_digital(DIGITAL_L1)) {
