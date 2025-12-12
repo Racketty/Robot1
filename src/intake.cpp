@@ -105,12 +105,3 @@ void outtake_opcontrol() {
       color_sorter();
     }
 }
-
-void piston_control() {
-    if (master.get_digital(DIGITAL_Y)) {
-  doinker.set(true);
-} 
-else if (master.get_digital(DIGITAL_X)) {
-  doinker.set(false);
-} 
-}
