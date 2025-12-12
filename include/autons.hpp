@@ -18,5 +18,5 @@ void odom_boomerang_injected_pure_pursuit_example();
 void measure_offsets();
 void match_load();
 void line_up();
-void better_auto();
-void best_auto();
+void odom_auton();
+void backup_auton();
