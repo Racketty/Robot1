@@ -6,7 +6,9 @@
 // https://ez-robotics.github.io/EZ-Template/
 /////
 
-// Chassis constructor
+
+
+
 ez::Drive chassis(
     // These are your drive motors, the first motor is used for sensing!
     {-1, -2, 3},     // Left Chassis Ports (negative port will reverse it!)
@@ -14,15 +16,7 @@ ez::Drive chassis(
 
     15,      // IMU Port
     4.125,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
-    466);   // Wheel RPM = cartridge * (motor gear / wheel gear)
-
-// Uncomment the trackers you're using here!
-// - `8` and `9` are smart ports (making these negative will reverse the sensor)
-//  - you should get positive values on the encoders going FORWARD and RIGHT
-// - `2.75` is the wheel diameter
-// - `4.0` is the distance from the center of the wheel to the center of the robot
-// ez::tracking_wheel horiz_tracker(8, 2.75, 4.0);  // This tracking wheel is perpendicular to the drive wheels
-// ez::tracking_wheel vert_tracker(9, 2.75, 4.0);   // This tracking wheel is parallel to the drive wheels
+    466);     // Wheel RPM = cartridge * (motor gear / wheel gear));   
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -74,9 +68,9 @@ void initialize() {
       {"Boomerang Pure Pursuit\n\nGo to (0, 24, 45) on the way to (24, 24) then come back to (0, 0, 0)", odom_boomerang_injected_pure_pursuit_example},
       {"Measure Offsets\n\nThis will turn the robot a bunch of times and calculate your offsets for your tracking wheels.", measure_offsets},
       */
-      //{"Drive\n\nDrive forward and spin intake", match_load}
-      //{"Drive\n\nDrive forward and spin intake", line_up}
-      {"Drive\n\nDrive forward and spin intake", best_auto}
+      //{"Drive\n\nDrive forward and spin intake", best_auto}
+      {"Drive\n\nDrive forward and spin intake", backup_auton
+      }
   });
 
   // Initialize chassis and auton selector
@@ -254,10 +248,10 @@ void opcontrol() {
     //ez_template_extras();
 
     chassis.opcontrol_tank();  // Tank control
-    //intake_opcontrol();        // Intake control
     intake_apply();
     intake_toggle_update();
     outtake_opcontrol();       // Outtake control
+    piston_control();
      
     // chassis.opcontrol_arcade_standard(ez::SPLIT);   // Standard split arcade
     // chassis.opcontrol_arcade_standard(ez::SINGLE);  // Standard single arcade
