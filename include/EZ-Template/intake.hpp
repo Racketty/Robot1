@@ -18,3 +18,5 @@ void set_scoreTop(int input);
 
 void intake_toggle_update();
 void intake_apply();
+void color_sorter();
+void piston_control();
