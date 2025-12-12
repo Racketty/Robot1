@@ -22,58 +22,18 @@ void set_outtake(int input) {
 void set_scoreTop(int input) {
     scoreTop.move(input);
 }
-/*
-void intake_opcontrol() {
-    static IntakeState intake_state = INTAKE_OFF; 
-
-    if (master.get_digital_new_press(DIGITAL_R1)) {
-        // If the motor is currently OFF or REVERSE, set it to FORWARD
-        if (intake_state != INTAKE_FORWARD) {
-            intake_state = INTAKE_FORWARD;
-        } 
-        // If the motor is already FORWARD, turn it OFF
-        else {
-            intake_state = INTAKE_OFF;
-        }
-    }
-
-    if (master.get_digital_new_press(DIGITAL_R2)) {
-        // If the motor is currently OFF or FORWARD, set it to REVERSE
-        if (intake_state != INTAKE_REVERSE) {
-            intake_state = INTAKE_REVERSE;
-        } 
-        // If the motor is already REVERSE, turn it OFF
-        else {
-            intake_state = INTAKE_OFF;
-        }
-    }
-
-    switch (intake_state) {
-        case INTAKE_FORWARD:
-            // R1 Toggled ON: Move forward at full power
-            intake.move(127);
-            break;
-            
-        case INTAKE_REVERSE:
-            // R2 Toggled ON: Move backward at full power
-            intake.move(-127);
-            break;
-            
-        case INTAKE_OFF:
-        default:
-            // Both Toggled OFF: Stop motor
-            intake.move(0);
-            break;
-    }
-}
-*/
 
 int top_power;   // motors -20
 int bottom_power;   // motor 10
+int out_power;  // motor 19
+
+// Optical sensor on port 5
+pros::Optical optical(5);
 
 void intake_apply() {
     top.move(top_power);       // motor -20
     bottom.move(bottom_power); // motor 10
+    outtake.move(out_power);       // motor 19
 }
 
 void intake_toggle_update() {
@@ -100,22 +60,57 @@ void intake_toggle_update() {
     }
 }
 
+void color_sorter() {
+    // ---------------- OPTICAL COLOR LOGIC ----------------
+    // Read hue from the optical sensor (0–359.999)
+    double hue = optical.get_hue();
 
+    // PROS returns negative on error -> treat as invalid
+    if (hue < 0.0) {
+      out_power = 0;
+    } else {
+      // Red: near 0° / 360° (adjust these later using real readings)
+      bool is_red =
+        (hue >= 0.0 && hue <= 30.0) ||
+        (hue >= 330.0 && hue < 360.0);
 
+      // Blue: roughly 125°–240° (also tweak based on your field lighting)
+      bool is_blue =
+        (hue >= 125.0 && hue <= 240.0);
 
+      if (is_blue) {
+        out_power = 127;     // forward on red
+        top_power = 0;
+
+      } else if (is_red) {
+        out_power = -80;     // reverse on blue
+      } else {
+        out_power = 0;     // stop on other colors
+      }
+    }
+}
 
 void outtake_opcontrol() {
     if (master.get_digital(DIGITAL_L1)) {
-      outtake.move(127);
+      out_power = 127;
       scoreTop.move(127);
 
     } 
     else if (master.get_digital(DIGITAL_L2)) {
-      outtake.move(-127);
+      out_power = -127;
       scoreTop.move(127);
     } 
     else {
-      outtake.move(0);
       scoreTop.move(0);
+      color_sorter();
     }
+}
+
+void piston_control() {
+    if (master.get_digital(DIGITAL_Y)) {
+  doinker.set(true);
+} 
+else if (master.get_digital(DIGITAL_X)) {
+  doinker.set(false);
+} 
 }
